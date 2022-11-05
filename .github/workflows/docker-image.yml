@@ -23,6 +23,9 @@ jobs:
         docker buildx create --name multibuilder --driver docker-container --bootstrap
         docker buildx use multibuilder
     - name: build and push image
+      env:
+        DOCKERHUB_USER: ${{secrets.DOCKERHUB_USER}}
+        DOCKERHUB_PASS: ${{secrets.DOCKERHUB_PASS}}
       run: |
-        docker login -u ${DOCKERHUB_USER} -p ${DOCKERHUB_PASS}
-        docker buildx build --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t ${IMAGENAME}:latest --push  .
+        docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS
+        docker buildx build --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t $IMAGENAME:latest --push  .
