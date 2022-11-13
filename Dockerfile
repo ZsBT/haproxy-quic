@@ -48,7 +48,8 @@ WORKDIR /var/lib/haproxy
 
 COPY --from=builder /usr/local/sbin/haproxy /usr/local/sbin/
 COPY --from=builder /opt/quictls/lib /opt/quictls/lib
-COPY etc /etc/haproxy
+ARG ETCHAPROXY=etc	# what to copy to /etc/haproxy
+COPY $ETCHAPROXY /etc/haproxy
 
 RUN echo /opt/quictls/lib >> /etc/ld.so.conf
 RUN ldconfig
