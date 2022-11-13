@@ -55,4 +55,6 @@ RUN echo /opt/quictls/lib >> /etc/ld.so.conf
 RUN ldconfig
 RUN haproxy -vv
 
-ENTRYPOINT haproxy -f /etc/haproxy/haproxy.cfg
+ENV HAPROXY_CONFIG=/etc/haproxy/haproxy.cfg
+
+ENTRYPOINT haproxy -f $HAPROXY_CONFIG
