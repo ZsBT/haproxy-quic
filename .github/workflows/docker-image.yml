@@ -28,4 +28,4 @@ jobs:
         DOCKERHUB_PASS: ${{secrets.DOCKERHUB_PASS}}
       run: |
         docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS
-        docker buildx build --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t $IMAGENAME:latest --push  .
+        docker buildx build --platform linux/arm64/v8,linux/amd64 -t $IMAGENAME:latest --push  .
