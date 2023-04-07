@@ -12,13 +12,13 @@ RUN git clone --quiet --single-branch --depth 1 https://github.com/quictls/opens
 WORKDIR /usr/local/src/openssl
 RUN mkdir -p /opt/quictls/ssl
 RUN ./Configure --libdir=lib --prefix=/opt/quictls	> configure-openssl.log
-RUN make > make-openssl.log
+RUN make -j $(nproc) > make-openssl.log
 RUN make install	> install-openssl.log
 
 # Install HAProxy
 RUN git clone --quiet --single-branch --depth 1 https://github.com/haproxy/haproxy.git /usr/local/src/haproxy
 WORKDIR /usr/local/src/haproxy
-RUN make \
+RUN make -j $(nproc)  \
   TARGET=linux-glibc \
   USE_LUA=1 \
   USE_OPENSSL=1 \
