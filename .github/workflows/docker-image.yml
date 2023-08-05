@@ -7,7 +7,7 @@ on:
   push:
     branches: [ "main" ]
   schedule:
-    - cron: '3 3 3 * *'
+    - cron: '5 5 5 * *'
     
 jobs:
 
@@ -29,3 +29,5 @@ jobs:
       run: |
         docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS
         docker buildx build --platform linux/arm64/v8,linux/amd64 -t $IMAGENAME:latest --push  .
+        curl -X POST ${{secrets.ZS_WEBHOOK}}
+
