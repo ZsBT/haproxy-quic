@@ -29,5 +29,5 @@ jobs:
       run: |
         docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS
         docker buildx build --platform linux/arm64/v8,linux/amd64 -t $IMAGENAME:latest --push  .
-        curl -X POST ${{secrets.ZS_WEBHOOK}}
+        curl -s -f -w 'HTTP %{http_code}\n' -X POST ${{secrets.ZS_WEBHOOK}}
 
