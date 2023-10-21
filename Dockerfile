@@ -1,8 +1,12 @@
-ARG GNUDIST=debian:stable
+LABEL version="1.1" description="HAProxy with QUIC support" org.opencontainers.image.authors="github.com/ZsBT"
 
+ARG GNUDIST=debian:stable
 ARG DEBIAN_FRONTEND=noninteractive
 
+
 FROM ${GNUDIST} as builder
+
+ARG HAPROXY_MAKE_AGRS
 
 RUN apt -qq update
 RUN apt install -y git time ca-certificates gcc libc6-dev liblua5.3-dev libpcre3-dev libssl-dev libsystemd-dev make wget zlib1g-dev socat >/dev/null
@@ -18,7 +22,7 @@ RUN make install	> install-openssl.log
 # Install HAProxy
 RUN git clone --quiet --single-branch --depth 1 https://github.com/haproxy/haproxy.git /usr/local/src/haproxy
 WORKDIR /usr/local/src/haproxy
-RUN make -j $(nproc)  \
+RUN make -j $(nproc)  ${HAPROXY_MAKE_AGRS} \
   TARGET=linux-glibc \
   USE_LUA=1 \
   USE_OPENSSL=1 \
@@ -32,6 +36,7 @@ RUN make -j $(nproc)  \
   LDFLAGS="-Wl,-rpath,/opt/quictls/lib"	> make-haproxy.log
 
 RUN make install-bin  > install-haproxy.log
+
 
 # Final flat image
 FROM ${GNUDIST}
