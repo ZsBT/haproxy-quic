@@ -1,4 +1,3 @@
-LABEL version="1.1" description="HAProxy with QUIC support" org.opencontainers.image.authors="github.com/ZsBT"
 
 ARG GNUDIST=debian:stable
 ARG DEBIAN_FRONTEND=noninteractive
@@ -63,3 +62,5 @@ RUN haproxy -vv
 ENV HAPROXY_CONFIG=/etc/haproxy/haproxy.cfg
 
 ENTRYPOINT haproxy -f $HAPROXY_CONFIG
+
+LABEL version="1.1" description="HAProxy with QUIC support" org.opencontainers.image.authors="github.com/ZsBT"
