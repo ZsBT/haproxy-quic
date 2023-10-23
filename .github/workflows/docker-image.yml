@@ -10,24 +10,29 @@ on:
     - cron: '5 18 4 * *'
     
 jobs:
-
   build:
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
+
     - name: multiarch environment
       run: |
         docker run --privileged --rm tonistiigi/binfmt --install all
         docker buildx create --name multibuilder --driver docker-container --bootstrap
         docker buildx use multibuilder
-    - name: build and push image
-      env:
-        DOCKERHUB_USER: ${{secrets.DOCKERHUB_USER}}
-        DOCKERHUB_PASS: ${{secrets.DOCKERHUB_PASS}}
+
+    - name: build and push 
       run: |
-        docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS
-        docker buildx build --platform linux/arm64/v8,linux/amd64 -t $IMAGENAME:latest --push  .
-        curl -s -f -w 'HTTP %{http_code}\n' -X POST ${{secrets.ZS_WEBHOOK}}
+        docker login -u ${{ secrets.DOCKERHUB_USER }} -p ${{ secrets.DOCKERHUB_PASS }}
+        docker buildx build --label=haproxy.version=$(curl -sk https://raw.githubusercontent.com/haproxy/haproxy/master/VERSION) --platform linux/arm64/v8,linux/amd64 -t $IMAGENAME:latest --push  .
+
+  deployment:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+    - name: deploy
+      run: |
+        curl -s -f -w 'HTTP %{http_code}\n' -X POST ${{ secrets.ZS_WEBHOOK }}
 
