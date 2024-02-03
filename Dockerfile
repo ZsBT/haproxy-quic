@@ -3,6 +3,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 FROM ${GNUDIST} as builder
 
+ARG HAPROXY_VERSION=2.9
 ARG HAPROXY_MAKE_ARGS
 
 RUN apt -qq update
@@ -17,7 +18,8 @@ RUN make -j $(nproc) > make-openssl.log
 RUN make install	> install-openssl.log
 
 # Install HAProxy
-RUN git clone --quiet --single-branch --depth 1 https://github.com/haproxy/haproxy.git /usr/local/src/haproxy
+#RUN git clone --quiet --single-branch --depth 1 https://github.com/haproxy/haproxy.git /usr/local/src/haproxy
+RUN git clone --quiet --single-branch https://git.haproxy.org/git/haproxy-${HAPROXY_VERSION}.git/  /usr/local/src/haproxy
 WORKDIR /usr/local/src/haproxy
 RUN make -j $(nproc)  ${HAPROXY_MAKE_ARGS} \
   TARGET=linux-glibc \
