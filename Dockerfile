@@ -1,12 +1,13 @@
 ARG GNUDIST=debian:stable
 ARG DEBIAN_FRONTEND=noninteractive
 
+ARG LUA_VERSION=5.4
+
 FROM ${GNUDIST} as builder
 
 ARG HAPROXY_VERSION=3.0
 ARG HAPROXY_MAKE_ARGS
 
-ARG LUA_VERSION=5.4
 
 RUN apt-get -qq update
 RUN apt-get install -y git time ca-certificates gcc libc6-dev liblua${LUA_VERSION}-dev libpcre3-dev libssl-dev libsystemd-dev make wget zlib1g-dev socat >/dev/null
