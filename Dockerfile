@@ -1,13 +1,13 @@
 ARG GNUDIST=debian:stable
 ARG DEBIAN_FRONTEND=noninteractive
 
-ENV LUA_VERSION=5.4
+ARG LUA_VERSION=5.4
 
 FROM ${GNUDIST} as builder
 
 ARG HAPROXY_VERSION=3.0
 ARG HAPROXY_MAKE_ARGS
-
+ARG LUA_VERSION
 
 RUN apt-get -qq update
 RUN apt-get install -y git time ca-certificates gcc libc6-dev liblua${LUA_VERSION}-dev libpcre3-dev libssl-dev libsystemd-dev make wget zlib1g-dev socat >/dev/null
@@ -42,6 +42,7 @@ RUN make install-bin  > install-haproxy.log
 
 # Final flat image
 FROM ${GNUDIST}
+ARG LUA_VERSION
 
 RUN apt-get -qq update
 RUN apt-get install -y libc6 liblua${LUA_VERSION}-0 libpcre3 zlib1g socat libsystemd0 >/dev/null
