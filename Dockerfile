@@ -1,7 +1,7 @@
 ARG GNUDIST=debian:stable
 ARG DEBIAN_FRONTEND=noninteractive
 
-ARG LUA_VERSION=5.4
+ENV LUA_VERSION=5.4
 
 FROM ${GNUDIST} as builder
 
