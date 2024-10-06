@@ -28,12 +28,3 @@ jobs:
         docker login -u ${{ secrets.DOCKERHUB_USER }} -p ${{ secrets.DOCKERHUB_PASS }}
         docker buildx build --label=github.commit=${{ env.GITHUB_SHA }} --label=haproxy.version=$(curl -sk https://raw.githubusercontent.com/haproxy/haproxy/master/VERSION) --platform linux/arm64/v8,linux/amd64 -t $IMAGENAME:latest --push  .
 
-  deployment:
-    runs-on: ubuntu-latest
-    needs: [ build ]
-    environment: production
-    steps:
-    - name: deploy
-      run: |
-        curl -s -f -w 'HTTP %{http_code}\n' -X POST ${{ secrets.ZS_WEBHOOK }}
-
