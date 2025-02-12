@@ -67,5 +67,7 @@ ENV HAPROXY_CONFIG=/etc/haproxy/haproxy.cfg
 
 ENTRYPOINT haproxy -f $HAPROXY_CONFIG
 
-LABEL description="HAProxy with QUIC support" org.opencontainers.image.authors="github.com/ZsBT"
+LABEL description="HAProxy with QUIC support" version="1.4" haproxy.version="${HAPROXY_VERSION}" lua.version="${LUA_VERSION}"
+LABEL com.github.zsbt.baseimage="${GNUDIST}"
+LABEL org.opencontainers.image.authors="github.com/ZsBT"
 
