@@ -26,5 +26,5 @@ jobs:
     - name: build and push 
       run: |
         docker login -u ${{ secrets.DOCKERHUB_USER }} -p ${{ secrets.DOCKERHUB_PASS }}
-        docker buildx build --label=github.commit=${{ env.GITHUB_SHA }} --label=haproxy.version=$(curl -sk https://raw.githubusercontent.com/haproxy/haproxy/master/VERSION) --platform linux/arm64/v8,linux/amd64 -t $IMAGENAME:latest --push  .
+        docker buildx build --label=com.github.zsbt.commit=${{ env.GITHUB_SHA }} --label=org.opencontainers.image.created="$(date -Iminutes)" --label=org.opencontainers.image.url=$IMAGENAME --platform linux/arm64/v8,linux/amd64 -t $IMAGENAME:latest --push  .
 

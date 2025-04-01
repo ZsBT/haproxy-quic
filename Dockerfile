@@ -43,9 +43,10 @@ RUN make install-bin  > install-haproxy.log
 # Final flat image
 FROM ${GNUDIST}
 ARG LUA_VERSION
+ARG OPTIONAL_PACKAGES="iputils-ping"
 
 RUN apt-get -qq update
-RUN apt-get install -y libc6 liblua${LUA_VERSION}-0 libpcre3 zlib1g socat libsystemd0 >/dev/null
+RUN apt-get install -y libc6 liblua${LUA_VERSION}-0 libpcre3 zlib1g socat libsystemd0 ${OPTIONAL_PACKAGES} >/dev/null
 RUN apt-get clean; find /var/lib/apt/lists -type f -delete
 
 RUN mkdir -vp /run/haproxy
@@ -67,7 +68,11 @@ ENV HAPROXY_CONFIG=/etc/haproxy/haproxy.cfg
 
 ENTRYPOINT haproxy -f $HAPROXY_CONFIG
 
-LABEL description="HAProxy with QUIC support" version="1.4" haproxy.version="${HAPROXY_VERSION}" lua.version="${LUA_VERSION}"
+LABEL org.opencontainers.image.version="1.5" 
+LABEL org.opencontainers.image.description="HAProxy ${HAPROXY_VERSION} custom build with QUIC support" haproxy.version="${HAPROXY_VERSION}" lua.version="${LUA_VERSION}"
+LABEL org.opencontainers.image.title="HAProxy"
+LABEL org.opencontainers.image.authors="ZsBT"
+LABEL org.opencontainers.image.source="https://github.com/ZsBT/haproxy-quic/"
+LABEL org.opencontainers.image.licences="WTFPL"
 LABEL com.github.zsbt.baseimage="${GNUDIST}"
-LABEL org.opencontainers.image.authors="github.com/ZsBT"
 
