@@ -3,9 +3,10 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 ARG LUA_VERSION=5.4
 
+
 FROM ${GNUDIST} as builder
 
-ARG HAPROXY_VERSION=3.1
+ARG HAPROXY_VERSION=3.2
 ARG HAPROXY_MAKE_ARGS
 ARG LUA_VERSION
 
@@ -21,7 +22,6 @@ RUN make -j $(nproc) > make-openssl.log
 RUN make install	> install-openssl.log
 
 # Install HAProxy
-#RUN git clone --quiet --single-branch --depth 1 https://github.com/haproxy/haproxy.git /usr/local/src/haproxy
 RUN git clone --quiet --single-branch https://git.haproxy.org/git/haproxy-${HAPROXY_VERSION}.git/  /usr/local/src/haproxy
 WORKDIR /usr/local/src/haproxy
 RUN make -j $(nproc)  ${HAPROXY_MAKE_ARGS} \
@@ -68,11 +68,12 @@ ENV HAPROXY_CONFIG=/etc/haproxy/haproxy.cfg
 
 ENTRYPOINT haproxy -f $HAPROXY_CONFIG
 
-LABEL org.opencontainers.image.version="1.5" 
-LABEL org.opencontainers.image.description="HAProxy ${HAPROXY_VERSION} custom build with QUIC support" haproxy.version="${HAPROXY_VERSION}" lua.version="${LUA_VERSION}"
-LABEL org.opencontainers.image.title="HAProxy"
+LABEL org.opencontainers.image.description="HAProxy ${HAPROXY_VERSION} custom build with latest QUIC tls" 
+LABEL org.opencontainers.image.title="HAProxy QUIC"
 LABEL org.opencontainers.image.authors="ZsBT"
 LABEL org.opencontainers.image.source="https://github.com/ZsBT/haproxy-quic/"
 LABEL org.opencontainers.image.licences="WTFPL"
-LABEL com.github.zsbt.baseimage="${GNUDIST}"
-
+LABEL org.opencontainers.image.version="1.5" 
+LABEL com.github.zsbt.haproxy.baseimage="${GNUDIST}"
+LABEL com.github.zsbt.haproxy.version="${HAPROXY_VERSION}" 
+LABEL com.github.zsbt.haproxy.luaversion="${LUA_VERSION}"
