@@ -22,20 +22,19 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get -qq update
 RUN apt-get install -y git time ca-certificates build-essential cmake g++ gcc libc6-dev liblua${LUA_VERSION}-dev libpcre2-dev libssl-dev libsystemd-dev make wget zlib1g-dev socat >/dev/null
 
-# Install OpenSSL-quic
-RUN git clone --quiet --single-branch --depth 1 https://github.com/quictls/quictls ${SSL_SRC}
-RUN mkdir -p ${SSL_DIR}/lib ${SSL_SRC}/build
-WORKDIR ${SSL_SRC}/build
-RUN cmake .. > configure-libssl.log
-RUN make -j $(nproc) include openssl ssl crypto-static ssl-static > make-libssl.log
-RUN cp -r include/openssl ${SSL_DIR}/include
+# build QuicTLS
+RUN git clone --quiet --single-branch --depth=1 https://github.com/quictls/quictls ${SSL_SRC}
+RUN mkdir -vp ${SSL_DIR}/lib 
+WORKDIR ${SSL_SRC}
+RUN cmake . > configure-libssl.log
+RUN make > make-libssl.log
+RUN cp -r include ${SSL_DIR}/include
 RUN cp -vt ${SSL_DIR}/lib/ *.so
 
-# Install HAProxy
-RUN git clone --quiet --single-branch https://git.haproxy.org/git/haproxy-${HAPROXY_VERSION}.git/  ${HPR_SRC}
+# build HAProxy
+RUN git clone --quiet --single-branch --depth=1 https://git.haproxy.org/git/haproxy-${HAPROXY_VERSION}.git/  ${HPR_SRC}
 WORKDIR ${HPR_SRC}
-RUN ${SSL_SRC}/build/apps/openssl version|awk '{print $2}' |tee SUBVERS
-RUN make -j $(nproc)  ${HAPROXY_MAKE_ARGS} \
+RUN make -j$(nproc)  ${HAPROXY_MAKE_ARGS} \
   TARGET=linux-glibc \
   USE_LUA=1 \
   USE_OPENSSL=1 \
