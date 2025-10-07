@@ -1,5 +1,4 @@
 ARG GNUDIST=debian:13
-ARG DEBIAN_FRONTEND=noninteractive
 
 ARG HAPROXY_VERSION=3.2
 ARG LUA_VERSION=5.4
@@ -80,14 +79,14 @@ RUN haproxy -vv
 
 ENV HAPROXY_CONFIG=/etc/haproxy/haproxy.cfg
 
-ENTRYPOINT haproxy -f $HAPROXY_CONFIG
+ENTRYPOINT [ "haproxy", "-f", "$HAPROXY_CONFIG" ]
 
-LABEL org.opencontainers.image.description="HAProxy ${HAPROXY_VERSION} custom build with latest QUIC tls" 
+LABEL org.opencontainers.image.description="Latest stable HAProxy ${HAPROXY_VERSION} custom build with latest QUIC tls" 
 LABEL org.opencontainers.image.title="HAProxy QUIC"
 LABEL org.opencontainers.image.authors="ZsBT"
 LABEL org.opencontainers.image.source="https://github.com/ZsBT/haproxy-quic/"
 LABEL org.opencontainers.image.licences="WTFPL"
-LABEL org.opencontainers.image.version="1.6" 
+LABEL org.opencontainers.image.version="1.7"
 LABEL com.github.zsbt.haproxy.baseimage="${GNUDIST}"
 LABEL com.github.zsbt.haproxy.version="${HAPROXY_VERSION}" 
 LABEL com.github.zsbt.haproxy.luaversion="${LUA_VERSION}"
