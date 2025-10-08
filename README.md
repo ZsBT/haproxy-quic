@@ -9,7 +9,7 @@ Docker Hub image available: buffertly/haproxy-quic
   <summary>Optional build args</summary>
 
 
-  GNUDIST: The GNU Linux docker base image. 
+  GNUDIST: The GNU Linux docker base image. Default: `debian:stable`
 
   LUA_VERSION: Default: 5.4
 
