@@ -25,8 +25,10 @@ RUN apt-get install -y git time ca-certificates build-essential cmake g++ gcc li
 RUN git clone --quiet --single-branch --depth=1 https://github.com/quictls/quictls ${SSL_SRC}
 RUN mkdir -vp ${SSL_DIR}/lib 
 WORKDIR ${SSL_SRC}
+COPY arch.patch .
+RUN patch -p0 crypto/bn/CMakeLists.txt < arch.patch
 RUN cmake . > configure-libssl.log
-RUN make > make-libssl.log
+RUN make -j$(nproc) crypto-static ssl-static > make-libssl.log
 RUN cp -r include ${SSL_DIR}/include
 RUN cp -vt ${SSL_DIR}/lib/ *.so
 
@@ -81,7 +83,7 @@ ENV HAPROXY_CONFIG=/etc/haproxy/haproxy.cfg
 
 ENTRYPOINT [ "haproxy", "-f", "$HAPROXY_CONFIG" ]
 
-LABEL org.opencontainers.image.description="Latest stable HAProxy ${HAPROXY_VERSION} custom build with latest QUIC tls" 
+LABEL org.opencontainers.image.description="HAProxy ${HAPROXY_VERSION} custom build with latest QUIC tls" 
 LABEL org.opencontainers.image.title="HAProxy QUIC"
 LABEL org.opencontainers.image.authors="ZsBT"
 LABEL org.opencontainers.image.source="https://github.com/ZsBT/haproxy-quic/"
