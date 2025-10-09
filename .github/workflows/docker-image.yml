@@ -27,5 +27,5 @@ jobs:
     - name: build and push 
       run: |
         docker login -u ${{ secrets.DOCKERHUB_USER }} -p ${{ secrets.DOCKERHUB_PASS }}
-        docker buildx build --label=com.github.zsbt.commit=${{ env.GITHUB_SHA }} --label=org.opencontainers.image.created="$(date -Iminutes)" --label=org.opencontainers.image.url=$IMAGENAME --platform linux/amd64 -t $IMAGENAME:latest --push  .
+        docker buildx build --platform linux/amd64 --push --build_arg=SSLVENDOR=wolfssl -t $IMAGENAME:wolfssl --progress=plain --label=com.github.zsbt.haproxy.commit=${{ env.GITHUB_SHA }} --label=org.opencontainers.image.created="$(date -Iminutes)" --label=org.opencontainers.image.url=$IMAGENAME .
 
