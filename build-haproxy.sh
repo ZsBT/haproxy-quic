@@ -11,6 +11,7 @@ case ${SSL_VENDOR} in
         ;;
 esac
 
+set -ex
 
 # build HAProxy
 git clone --quiet --single-branch --depth=1 https://git.haproxy.org/git/haproxy-${HAPROXY_VERSION}.git/  /usr/src/haproxy
