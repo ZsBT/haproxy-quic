@@ -1,4 +1,4 @@
-name: build the image and publish on DockerHub
+name: CI build
 
 env:
   IMAGENAME: buffertly/haproxy-quic
@@ -9,24 +9,37 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '5 18 4 * *'
-    
+
 jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      DOCKER_CONFIG: $HOME/.docker
+      IMGLABELS: "--label=com.github.zsbt.haproxy.commit=${LAST_COMMIT_SHA:0:7} --label=org.opencontainers.image.created='$(date -Iminutes)' --label=org.opencontainers.image.url=$IMAGENAME "
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-    - name: multiarch environment
+    - name: Setup multiarch environment
       run: |
         docker run --privileged --rm tonistiigi/binfmt --install all
         docker buildx create --name multibuilder --driver docker-container --bootstrap
         docker buildx use multibuilder
 
-    - name: build and push 
+    - name: Login to registry
       run: |
         docker login -u ${{ secrets.DOCKERHUB_USER }} -p ${{ secrets.DOCKERHUB_PASS }}
-        docker buildx build --platform linux/amd64 --push --build-arg=SSLVENDOR=wolfssl -t $IMAGENAME:wolfssl --progress=plain --label=com.github.zsbt.haproxy.commit=${{ env.GITHUB_SHA }} --label=org.opencontainers.image.created="$(date -Iminutes)" --label=org.opencontainers.image.url=$IMAGENAME .
-        docker buildx build --platform linux/amd64,linux/arm64/v8 --push --build-arg=SSLVENDOR=quictls_openssl -t $IMAGENAME:latest --progress=plain --label=com.github.zsbt.haproxy.commit=${{ env.GITHUB_SHA }} --label=org.opencontainers.image.created="$(date -Iminutes)" --label=org.opencontainers.image.url=$IMAGENAME .
+
+    - name: Build and push HAProxy w/ WolfSSL
+      continue-on-error: true
+      run: |
+        docker build --progress=plain --build-arg=SSLVENDOR=wolfssl -t $IMAGENAME:wolfssl --push $IMGLABELS .
+#        docker buildx build --progress=plain --platform linux/amd64,linux/arm64/v8 --build-arg=SSLVENDOR=wolfssl -t $IMAGENAME:wolfssl --push 
+
+#    - name: Build and push HAProxy w/ QuictTLS/OpenSSL
+#      continue-on-error: true
+#      run: |
+#        docker buildx build --progress=plain --platform linux/amd64,linux/arm64/v8 --build-arg=SSLVENDOR=quictls_openssl -t $IMAGENAME:openssl --push --label=com.github.zsbt.haproxy.commit=${LAST_COMMIT_SHA:0:7} --label=org.opencontainers.image.created="$(date -Iminutes)" --label=org.opencontainers.image.url=$IMAGENAME .
 
