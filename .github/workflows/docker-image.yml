@@ -35,20 +35,20 @@ jobs:
 #    - name: Build and push HAProxy w/ WolfSSL
 #      continue-on-error: true
 #      run: |
-#        docker buildx build --platform linux/amd64,linux/arm64/v8 --progress=plain --build-arg=SSLVENDOR=wolfssl -t $IMAGENAME:wolfssl --push --label=org.opencontainers.image.revision=${GITHUB_SHA:0:7} --label=org.opencontainers.image.authors=$GITHUB_ACTOR --label=org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} --label=org.opencontainers.image.created="$(date -Iminutes)" .
+#        docker buildx build --platform linux/amd64,linux/arm64/v8 --progress=plain --build-arg=SSL_VENDOR=wolfssl -t $IMAGENAME:wolfssl --push --label=org.opencontainers.image.revision=${GITHUB_SHA:0:7} --label=org.opencontainers.image.authors=$GITHUB_ACTOR --label=org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} --label=org.opencontainers.image.created="$(date -Iminutes)" .
 #
     - name: Build and push HAProxy w/ QuicTLS
       continue-on-error: true
       run: |
-        docker build --progress=plain --build-arg=SSLVENDOR=quictls_quictls -t $IMAGENAME:quictls --push --label=org.opencontainers.image.revision=${GITHUB_SHA:0:7} --label=org.opencontainers.image.authors=$GITHUB_ACTOR --label=org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} --label=org.opencontainers.image.created="$(date -Iminutes)" .
+        docker build --progress=plain --build-arg=SSL_VENDOR=quictls_quictls -t $IMAGENAME:quictls --push --label=org.opencontainers.image.revision=${GITHUB_SHA:0:7} --label=org.opencontainers.image.authors=$GITHUB_ACTOR --label=org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} --label=org.opencontainers.image.created="$(date -Iminutes)" .
 
     - name: Build and push HAProxy w/ OpenSSL
       continue-on-error: true
       run: |
-        docker buildx build --platform linux/amd64,linux/arm64/v8 --progress=plain --build-arg=SSLVENDOR=quictls_openssl -t $IMAGENAME:openssl --push --label=com.github.zsbt.haproxy.openssl.version=3.1.7 --label=org.opencontainers.image.revision=${GITHUB_SHA:0:7} --label=org.opencontainers.image.authors=$GITHUB_ACTOR --label=org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} --label=org.opencontainers.image.created="$(date -Iminutes)" .
+        docker buildx build --platform linux/amd64,linux/arm64/v8 --progress=plain --build-arg=SSL_VENDOR=quictls_openssl -t $IMAGENAME:openssl --push --label=com.github.zsbt.haproxy.openssl.version=3.1.7 --label=org.opencontainers.image.revision=${GITHUB_SHA:0:7} --label=org.opencontainers.image.authors=$GITHUB_ACTOR --label=org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} --label=org.opencontainers.image.created="$(date -Iminutes)" .
 
 #    - name: Build and push HAProxy w/ QuictTLS/OpenSSL
 #      continue-on-error: true
 #      run: |
-#        docker buildx build --progress=plain --platform linux/amd64,linux/arm64/v8 --build-arg=SSLVENDOR=quictls_openssl -t $IMAGENAME:openssl --push --label=com.github.zsbt.haproxy.commit=${LAST_COMMIT_SHA:0:7} --label=org.opencontainers.image.created="$(date -Iminutes)" --label=org.opencontainers.image.url=$IMAGENAME .
+#        docker buildx build --progress=plain --platform linux/amd64,linux/arm64/v8 --build-arg=SSL_VENDOR=quictls_openssl -t $IMAGENAME:openssl --push --label=com.github.zsbt.haproxy.commit=${LAST_COMMIT_SHA:0:7} --label=org.opencontainers.image.created="$(date -Iminutes)" --label=org.opencontainers.image.url=$IMAGENAME .
 
