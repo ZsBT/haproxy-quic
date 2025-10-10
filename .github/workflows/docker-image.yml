@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOCKER_CONFIG: $HOME/.docker
-      IMGLABELS: "--label=org.opencontainers.image.revision=${GITHUB_SHA:0:7} --label=org.opencontainers.image.authors=$GITHUB_ACTOR --label=org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"
+      
 
     steps:
     - name: Checkout repository
@@ -35,7 +35,7 @@ jobs:
     - name: Build and push HAProxy w/ WolfSSL
       continue-on-error: true
       run: |
-        docker build --progress=plain --build-arg=SSLVENDOR=wolfssl -t $IMAGENAME:wolfssl --push $IMGLABELS .
+        docker build --progress=plain --build-arg=SSLVENDOR=wolfssl -t $IMAGENAME:wolfssl --push --label=org.opencontainers.image.revision=${GITHUB_SHA:0:7} --label=org.opencontainers.image.authors=$GITHUB_ACTOR --label=org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} --label=org.opencontainers.image.created="$(date -Iminutes)" .
 #        docker buildx build --progress=plain --platform linux/amd64,linux/arm64/v8 --build-arg=SSLVENDOR=wolfssl -t $IMAGENAME:wolfssl --push 
 
 #    - name: Build and push HAProxy w/ QuictTLS/OpenSSL
