@@ -75,8 +75,6 @@ ENTRYPOINT [ "haproxy", "-f", "/etc/haproxy/haproxy.cfg" ]
 
 LABEL org.opencontainers.image.description="HAProxy ${HAPROXY_VERSION} custom build with latest QUIC tls" 
 LABEL org.opencontainers.image.title="HAProxy QUIC"
-LABEL org.opencontainers.image.authors="ZsBT"
-LABEL org.opencontainers.image.source="https://github.com/ZsBT/haproxy-quic/"
 LABEL org.opencontainers.image.licences="WTFPL"
 LABEL org.opencontainers.image.version="1.7"
 LABEL com.github.zsbt.haproxy.baseimage="${GNUDIST}"

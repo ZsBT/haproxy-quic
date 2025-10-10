@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOCKER_CONFIG: $HOME/.docker
-      IMGLABELS: "--label=com.github.zsbt.haproxy.commit=${LAST_COMMIT_SHA:0:7} --label=org.opencontainers.image.created='$(date -Iminutes)' --label=org.opencontainers.image.url=$IMAGENAME "
+      IMGLABELS: "--label=org.opencontainers.image.revision=${GITHUB_SHA:0:7} --label=org.opencontainers.image.authors=$GITHUB_ACTOR --label=org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"
 
     steps:
     - name: Checkout repository
