@@ -30,7 +30,7 @@ ENV SSL_SRC=${SSL_SRC}
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get -qq update
-RUN apt-get -qq install -y git time ca-certificates build-essential cmake g++ gcc libc6-dev liblua${LUA_VERSION}-dev libpcre2-dev libssl-dev libsystemd-dev make wget zlib1g-dev socat
+RUN apt-get -qq install -y git time ca-certificates build-essential cmake g++ gcc libc6-dev liblua${LUA_VERSION}-dev libpcre2-dev libssl-dev libsystemd-dev make wget zlib1g-dev socat >/dev/null
 
 COPY build-ssl.sh /usr/local/bin/
 RUN build-ssl.sh ${SSL_VENDOR}
@@ -53,7 +53,7 @@ ARG SSL_VENDOR
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get -qq update
-RUN apt-get -qq install -y libc6 liblua${LUA_VERSION}-0 libpcre2-posix* zlib1g socat libsystemd0 ${OPTIONAL_PACKAGES}
+RUN apt-get -qq install -y libc6 liblua${LUA_VERSION}-0 libpcre2-posix* zlib1g socat libsystemd0 ${OPTIONAL_PACKAGES} >/dev/null
 RUN apt-get clean; find /var/lib/apt/lists -type f -delete
 
 RUN mkdir -vp /run/haproxy
@@ -73,10 +73,11 @@ RUN haproxy -vv
 
 ENTRYPOINT [ "haproxy", "-f", "/etc/haproxy/haproxy.cfg" ]
 
-LABEL org.opencontainers.image.description="HAProxy ${HAPROXY_VERSION} custom build with latest QUIC tls" 
+LABEL org.opencontainers.image.description="HAProxy ${HAPROXY_VERSION} custom build with QUIC ${SSL_VENDOR}" 
 LABEL org.opencontainers.image.title="HAProxy QUIC"
 LABEL org.opencontainers.image.licences="WTFPL"
 LABEL org.opencontainers.image.version="1.7"
+
 LABEL com.github.zsbt.haproxy.baseimage="${GNUDIST}"
 LABEL com.github.zsbt.haproxy.version="${HAPROXY_VERSION}" 
 LABEL com.github.zsbt.haproxy.luaversion="${LUA_VERSION}"
