@@ -3,13 +3,14 @@ ARG GNUDIST=debian:13
 ARG HAPROXY_VERSION=3.2
 ARG LUA_VERSION=5.4
 
+ARG OPTIONAL_PACKAGES="iputils-ping"
+
 # wolfssl, quictls_quictls, quictls_openssl
 ARG SSL_VENDOR=wolfssl
 ARG SSL_MAKE_ARGS
 
 ARG SSL_DIR=/usr/local
 ARG SSL_SRC=/usr/local/src/libssl
-ARG HPR_SRC=/usr/local/src/haproxy
 
 
 
@@ -22,7 +23,6 @@ ARG SSL_VENDOR
 ARG SSL_MAKE_ARGS
 ARG SSL_SRC
 ARG SSL_DIR
-ARG HPR_SRC
 
 ENV SSL_MAKE_ARGS=${SSL_MAKE_ARGS}
 ENV SSL_DIR=${SSL_DIR}
@@ -30,7 +30,7 @@ ENV SSL_SRC=${SSL_SRC}
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get -qq update
-RUN apt-get install -y git time ca-certificates build-essential cmake g++ gcc libc6-dev liblua${LUA_VERSION}-dev libpcre2-dev libssl-dev libsystemd-dev make wget zlib1g-dev socat >/dev/null
+RUN apt-get -qq install -y git time ca-certificates build-essential cmake g++ gcc libc6-dev liblua${LUA_VERSION}-dev libpcre2-dev libssl-dev libsystemd-dev make wget zlib1g-dev socat
 
 COPY build-ssl.sh /usr/local/bin/
 RUN build-ssl.sh ${SSL_VENDOR}
@@ -46,14 +46,14 @@ FROM ${GNUDIST}
 ARG GNUDIST
 ARG HAPROXY_VERSION
 ARG LUA_VERSION
-ARG OPTIONAL_PACKAGES="iputils-ping"
+ARG OPTIONAL_PACKAGES
 ARG SSL_DIR
 ARG SSL_VENDOR
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get -qq update
-RUN apt-get install -y libc6 liblua${LUA_VERSION}-0 libpcre2-posix* zlib1g socat libsystemd0 ${OPTIONAL_PACKAGES} >/dev/null
+RUN apt-get -qq install -y libc6 liblua${LUA_VERSION}-0 libpcre2-posix* zlib1g socat libsystemd0 ${OPTIONAL_PACKAGES}
 RUN apt-get clean; find /var/lib/apt/lists -type f -delete
 
 RUN mkdir -vp /run/haproxy

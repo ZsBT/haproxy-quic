@@ -8,8 +8,16 @@ build_wolfssl()(
     git clone --depth 1 --branch $WOLFSSL_BRANCH https://github.com/wolfssl/wolfssl.git ${SSL_SRC}
     cd ${SSL_SRC}
     ./autogen.sh >autogen-wolfssl.log
-    ./configure TARGET=linux-glibc --enable-quic --enable-tls13 --enable-alpn --enable-haproxy ${SSL_MAKE_ARGS} --prefix=${SSL_DIR} --libdir=${SSL_DIR}/lib >configure-wolfssl.log
+    ./configure TARGET=linux-glibc --with-gnu-ld EXTRA_CFLAGS=-DWOLFSSL_GETRANDOM=1 \
+        --enable-haproxy ${SSL_MAKE_ARGS} --prefix=${SSL_DIR} --libdir=${SSL_DIR}/lib \
+        --enable-tls13 --disable-oldtls  \
+        --enable-ocsp --enable-ocspstapling --enable-ocspstapling2 \
+        --enable-crl \
+        --enable-alpn --enable-quic --enable-earlydata \
+    >configure-wolfssl.log
+    # --enable-fips
     make -j$(nproc) >make-wolfssl.log
+    make test
     make install
 )
 
