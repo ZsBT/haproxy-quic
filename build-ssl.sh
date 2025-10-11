@@ -30,7 +30,7 @@ build_quictls_quictls()(
     cd ${SSL_SRC}
     cmake . > configure-libssl.log
     make -j$(nproc) ${SSL_MAKE_ARGS} crypto-static ssl-static > make-libssl.log
-    cp -avrt ${SSL_DIR}/include/ include/*
+    cp -art ${SSL_DIR}/include/ include/*
     cp  -avt ${SSL_DIR}/lib/ *.so
 )
 
