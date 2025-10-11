@@ -1,8 +1,5 @@
 name: CI build
 
-env:
-  IMAGENAME: buffertly/haproxy-quic
-
 on:
   push:
     branches: [ "main" ]
@@ -20,7 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOCKER_CONFIG: $HOME/.docker
-      
+      IMAGENAME: buffertly/haproxy-quic
+      COMMON_LABELS: --label=org.opencontainers.image.revision=${GITHUB_SHA:0:7} --label=org.opencontainers.image.authors=$GITHUB_ACTOR --label=org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} 
 
     steps:
     - name: Checkout repository
@@ -36,17 +34,18 @@ jobs:
       run: |
         docker login -u ${{ secrets.DOCKERHUB_USER }} -p ${{ secrets.DOCKERHUB_PASS }}
 
+    - name: Build and push HAProxy w/ QuicTLS
+      #continue-on-error: true
+      run: |
+        docker build --progress=plain --build-arg=SSL_VENDOR=quictls_quictls -t $IMAGENAME:quictls --push --label=org.opencontainers.image.created="$(date -Iminutes)" .
+        false
+
     - name: Build and push HAProxy w/ WolfSSL
       #continue-on-error: true
       run: |
         docker buildx build --platform linux/amd64,linux/arm64/v8 --progress=plain --build-arg=SSL_VENDOR=wolfssl -t $IMAGENAME:wolfssl --push --label=org.opencontainers.image.revision=${GITHUB_SHA:0:7} --label=org.opencontainers.image.authors=$GITHUB_ACTOR --label=org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} --label=org.opencontainers.image.created="$(date -Iminutes)" .
         docker tag $IMAGENAME:wolfssl $IMAGENAME:latest
         docker push -q $IMAGENAME:latest
-
-    - name: Build and push HAProxy w/ QuicTLS
-      #continue-on-error: true
-      run: |
-        docker build --progress=plain --build-arg=SSL_VENDOR=quictls_quictls -t $IMAGENAME:quictls --push --label=org.opencontainers.image.revision=${GITHUB_SHA:0:7} --label=org.opencontainers.image.authors=$GITHUB_ACTOR --label=org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} --label=org.opencontainers.image.created="$(date -Iminutes)" .
 
     - name: Build and push HAProxy w/ OpenSSL
       #continue-on-error: true
