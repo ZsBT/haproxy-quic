@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOCKER_CONFIG: $HOME/.docker
-      DIMAGE: {{ secrets.DOCKERHUB_USER }}/haproxy-quic
+      DIMAGE: ${{ secrets.DOCKERHUB_USER }}/haproxy-quic
 
     steps:
     - name: Checkout repository
