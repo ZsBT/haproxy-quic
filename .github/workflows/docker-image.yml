@@ -6,6 +6,10 @@ env:
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - LICENSE.txt
+      - README.md
+      - .dockerignore
   workflow_dispatch:
   schedule:
     - cron: '5 18 4 * *'
