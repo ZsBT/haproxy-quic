@@ -37,24 +37,8 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
-#    - name: Setup multiarch environment
-#      run: |
-#        docker run --privileged --rm tonistiigi/binfmt --install all
-#        docker buildx create --name multibuilder --driver docker-container --bootstrap
-#        docker buildx use multibuilder
-#
-#    - name: Login to registry
-#      run: |
-#        docker login -u ${{ }} -p ${{ }}
-
-    - name: Common build arguments for image ${DIMAGE}
+    - name: Common build arguments
       run: echo "COMMON_ARGS=--progress=plain --label=org.opencontainers.image.revision=${GITHUB_SHA:0:7} --label=org.opencontainers.image.authors=$GITHUB_ACTOR --label=org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} --label=org.opencontainers.image.created=$(date -Idate) " >> $GITHUB_ENV
-
-    - name: Build and push HAProxy w/ QuicTLS
-      #continue-on-error: true
-      run: |
-        docker buildx build --build-arg=SSL_VENDOR=quictls_quictls -t ${DIMAGE}:quictls --push ${COMMON_ARGS} --platform linux/amd64 .
-        false
 
     - name: Build and push HAProxy w/ WolfSSL
       #continue-on-error: true
@@ -62,6 +46,11 @@ jobs:
         docker buildx build --build-arg=SSL_VENDOR=wolfssl -t ${DIMAGE}:wolfssl --push ${COMMON_ARGS} --platform linux/amd64,linux/arm64/v8 .
         docker tag ${DIMAGE}:wolfssl ${DIMAGE}:latest
         docker push -q ${DIMAGE}:latest
+
+    - name: Build and push HAProxy w/ QuicTLS
+      #continue-on-error: true
+      run: |
+        docker buildx build --build-arg=SSL_VENDOR=quictls_quictls -t ${DIMAGE}:quictls --push ${COMMON_ARGS} --platform linux/amd64 .
 
     - name: Build and push HAProxy w/ OpenSSL
       #continue-on-error: true
