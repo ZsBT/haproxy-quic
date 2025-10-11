@@ -18,7 +18,7 @@ jobs:
     env:
       DOCKER_CONFIG: $HOME/.docker
       IMAGENAME: buffertly/haproxy-quic
-      COMMON_LABELS: --label=org.opencontainers.image.revision=${GITHUB_SHA:0:7} --label=org.opencontainers.image.authors=$GITHUB_ACTOR --label=org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} 
+      
 
     steps:
     - name: Checkout repository
@@ -34,10 +34,13 @@ jobs:
       run: |
         docker login -u ${{ secrets.DOCKERHUB_USER }} -p ${{ secrets.DOCKERHUB_PASS }}
 
+    - name: Generate common image labels
+      run: echo "COMMON_LABELS=--label=org.opencontainers.image.revision=${GITHUB_SHA:0:7} --label=org.opencontainers.image.authors=$GITHUB_ACTOR --label=org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} --label=org.opencontainers.image.created='$(date -Idate)' " >> $GITHUB_ENV
+
     - name: Build and push HAProxy w/ QuicTLS
       #continue-on-error: true
       run: |
-        docker build --progress=plain --build-arg=SSL_VENDOR=quictls_quictls -t $IMAGENAME:quictls --push --label=org.opencontainers.image.created="$(date -Iminutes)" .
+        docker build --progress=plain --build-arg=SSL_VENDOR=quictls_quictls -t $IMAGENAME:quictls --push ${COMMON_LABELS} .
         false
 
     - name: Build and push HAProxy w/ WolfSSL
