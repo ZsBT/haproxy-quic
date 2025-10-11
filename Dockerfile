@@ -64,7 +64,7 @@ WORKDIR /var/lib/haproxy
 
 COPY --from=builder /usr/local/sbin/haproxy /usr/local/sbin/
 COPY --from=builder ${SSL_DIR}/lib ${SSL_DIR}/lib
-ARG ETCHAPROXY=etc	# what to copy to /etc/haproxy
+ARG ETCHAPROXY=etc
 COPY $ETCHAPROXY /etc/haproxy
 
 RUN echo ${SSL_DIR}/lib >> /etc/ld.so.conf
