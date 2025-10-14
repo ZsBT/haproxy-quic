@@ -17,19 +17,14 @@ Docker Hub images available: [buffertly/haproxy-quic](https://hub.docker.com/r/b
 <details>
   <summary>Optional build args</summary>
 
+  * `GNUDIST`: The GNU Linux docker base image.
+  * `OPTIONAL_PACKAGES`: OS packages you need in the container, separated with spaces. Default: `iputils-ping`
+  * `HAPROXY_VERSION`: The HAProxy version.
+  * `HAPROXY_MAKE_ARGS`: Arguments to add to `make` while building HAProxy
+  * `SSL_VENDOR`: one of wolfssl, quictls_quictls, quictls_openssl
+  * `SSL_MAKE_ARGS`: additional make arguments while building ssl
+  * `LUA_VERSION`: The required Lua version.
 
-  GNUDIST: The GNU Linux docker base image.
-
-  LUA_VERSION: The required Lua version.
-
-  HAPROXY_VERSION: The HAProxy version.
-
-  OPTIONAL_PACKAGES: OS packages you need in the container, separated with spaces. Default: `iputils-ping`
-
-  HAPROXY_MAKE_ARGS: Arguments to add to `make` while building HAProxy
- 
-  SSL_VENDOR: one of wolfssl, quictls_quictls, quictls_openssl
-  
-  SSL_MAKE_ARGS: additional make arguments while building ssl
+  For details, take a look at the Dockerfile.
   
 </details>
