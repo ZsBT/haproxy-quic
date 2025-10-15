@@ -18,7 +18,7 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      DOCKER_CONFIG: $HOME/.docker
+#      DOCKER_CONFIG: $HOME/.docker
       DIMAGE: buffertly/haproxy-quic
 
     steps:
