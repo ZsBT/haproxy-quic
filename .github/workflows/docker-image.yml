@@ -43,7 +43,7 @@ jobs:
     - name: Build and push HAProxy w/ WolfSSL
       #continue-on-error: true
       run: |
-        docker buildx build --build-arg=SSL_VENDOR=wolfssl -t ${DIMAGE}:wolfssl --push ${COMMON_ARGS} --platform linux/amd64,linux/arm64/v8 .
+        docker buildx build --build-arg=SSL_VENDOR=wolfssl -t ${DIMAGE}:wolfssl --push ${COMMON_ARGS} . #--platform linux/amd64,linux/arm64/v8 .
         docker tag ${DIMAGE}:wolfssl ${DIMAGE}:latest
         docker push -q ${DIMAGE}:latest
 
@@ -55,7 +55,7 @@ jobs:
     - name: Build and push HAProxy w/ OpenSSL
       #continue-on-error: true
       run: |
-        docker buildx build --build-arg=SSL_VENDOR=quictls_openssl -t ${DIMAGE}:openssl --push ${COMMON_ARGS} --platform linux/amd64,linux/arm64/v8 .
+        docker buildx build --build-arg=SSL_VENDOR=quictls_openssl -t ${DIMAGE}:openssl --push ${COMMON_ARGS} . #--platform linux/amd64,linux/arm64/v8 .
         docker tag ${DIMAGE}:openssl ${DIMAGE}:stable
         docker push -q ${DIMAGE}:stable
 
