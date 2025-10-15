@@ -13,13 +13,14 @@ on:
   schedule:
     - cron: '5 18 4 * *'
 
+  env:
+    DIMAGE: buffertly/haproxy-quic
 jobs:
   build-n-push:
 
     runs-on: ubuntu-latest
     env:
 #      DOCKER_CONFIG: $HOME/.docker
-      DIMAGE: buffertly/haproxy-quic
 
     steps:
     - name: Checkout repository
