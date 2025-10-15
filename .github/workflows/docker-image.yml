@@ -42,6 +42,13 @@ jobs:
     - name: Common build arguments
       run: echo "COMMON_ARGS=--progress=plain --label=org.opencontainers.image.revision=${GITHUB_SHA:0:7} --label=org.opencontainers.image.authors=$GITHUB_ACTOR --label=org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} --label=org.opencontainers.image.created=$(date -Idate) " >> $GITHUB_ENV
 
+    - name: Build test
+      run: |
+        docker buildx build -t ${DIMAGE} -f dockerfile-empty .
+        docker tag ${DIMAGE}:empty ${DIMAGE}:empty1
+        docker push -q ${DIMAGE}:empty
+        docker push -q ${DIMAGE}:empty1
+
     - name: Build and push HAProxy w/ WolfSSL
       #continue-on-error: true
       run: |
