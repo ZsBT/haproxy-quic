@@ -13,8 +13,6 @@ on:
   schedule:
     - cron: '5 18 4 * *'
 
-env:
-  DIMAGE: buffertly/haproxy-quic
 
 jobs:
   build-n-push:
@@ -22,6 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOCKER_CONFIG: $HOME/.docker
+      DIMAGE: buffertly/haproxy-quic
 
     steps:
     - name: Checkout repository
@@ -42,20 +41,10 @@ jobs:
     - name: Common build arguments
       run: echo "COMMON_ARGS=--progress=plain --label=org.opencontainers.image.revision=${GITHUB_SHA:0:7} --label=org.opencontainers.image.authors=$GITHUB_ACTOR --label=org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} --label=org.opencontainers.image.created=$(date -Idate) " >> $GITHUB_ENV
 
-    - name: Build test
-      run: |
-        docker buildx build --load -t ${DIMAGE}:empty -f dockerfile-empty .
-        docker tag ${DIMAGE}:empty ${DIMAGE}:empty1
-        docker push -q ${DIMAGE}:empty
-        docker push -q ${DIMAGE}:empty1
-
     - name: Build and push HAProxy w/ WolfSSL
       #continue-on-error: true
       run: |
-        docker buildx build --build-arg=SSL_VENDOR=wolfssl -t ${DIMAGE}:wolfssl ${COMMON_ARGS} . #--platform linux/amd64,linux/arm64/v8 .
-        docker tag ${DIMAGE}:wolfssl ${DIMAGE}:latest
-        docker push -q ${DIMAGE}:wolfssl
-        docker push -q ${DIMAGE}:latest
+        docker buildx build --build-arg=SSL_VENDOR=wolfssl -t ${DIMAGE}:wolfssl -t ${DIMAGE}:latest --push ${COMMON_ARGS} . #--platform linux/amd64,linux/arm64/v8 .
 
     - name: Build and push HAProxy w/ QuicTLS
       #continue-on-error: true
@@ -65,7 +54,5 @@ jobs:
     - name: Build and push HAProxy w/ OpenSSL
       #continue-on-error: true
       run: |
-        docker buildx build --build-arg=SSL_VENDOR=quictls_openssl -t ${DIMAGE}:openssl --push ${COMMON_ARGS} . #--platform linux/amd64,linux/arm64/v8 .
-        docker tag ${DIMAGE}:openssl ${DIMAGE}:stable
-        docker push -q ${DIMAGE}:stable
+        docker buildx build --build-arg=SSL_VENDOR=quictls_openssl -t ${DIMAGE}:openssl -t ${DIMAGE}:stable --push ${COMMON_ARGS} . #--platform linux/amd64,linux/arm64/v8 .
 
