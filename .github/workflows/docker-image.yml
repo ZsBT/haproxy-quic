@@ -44,7 +44,7 @@ jobs:
 
     - name: Build test
       run: |
-        docker buildx build -t ${DIMAGE} -f dockerfile-empty .
+        docker buildx build --load -t ${DIMAGE} -f dockerfile-empty .
         docker tag ${DIMAGE}:empty ${DIMAGE}:empty1
         docker push -q ${DIMAGE}:empty
         docker push -q ${DIMAGE}:empty1
