@@ -1,9 +1,9 @@
 #!/bin/bash
 
+WOLFSSL_BRANCH=v5.8.2-stable 
+
 build_wolfssl()(
     set -ex
-
-    WOLFSSL_BRANCH=v5.8.2-stable 
 
     git clone --depth 1 --branch $WOLFSSL_BRANCH https://github.com/wolfssl/wolfssl.git ${SSL_SRC}
     cd ${SSL_SRC}

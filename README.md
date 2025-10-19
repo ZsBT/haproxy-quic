@@ -1,7 +1,7 @@
 [![build the image and publish on DockerHub](https://github.com/ZsBT/haproxy-quic/actions/workflows/docker-image.yml/badge.svg)](https://github.com/ZsBT/haproxy-quic/actions/workflows/docker-image.yml)
 
 # haproxy-quic
-HAproxy with HTTP/3 support.
+HAproxy with HTTP/3 support. Just mount the stuff under /etc/haproxy and it is ready to go.
 
 Docker Hub images available: [buffertly/haproxy-quic](https://hub.docker.com/r/buffertly/haproxy-quic)
 
