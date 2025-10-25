@@ -10,7 +10,10 @@ build_wolfssl()(
     ./autogen.sh >autogen-wolfssl.log
     ./configure TARGET=linux-glibc --with-gnu-ld EXTRA_CFLAGS=-DWOLFSSL_GETRANDOM=1 \
         --enable-haproxy ${SSL_MAKE_ARGS} --prefix=${SSL_DIR} --libdir=${SSL_DIR}/lib \
+        --disable-benchmark --disable-examples --disable-crypttests --disable-crypttests-libs \
+        --enable-64bit \
         --enable-tls13 --disable-oldtls  \
+        --enable-aesxts --enable-cmac --enable-curve25519 --enable-ed25519 --enable-ed25519-stream --enable-curve448 --enable-ed448 --enable-ed448-stream \
         --enable-ocsp --enable-ocspstapling --enable-ocspstapling2 \
         --enable-crl \
         --enable-alpn --enable-quic --enable-earlydata \
@@ -41,9 +44,11 @@ build_quictls_openssl()(
     git clone --quiet --single-branch --depth 1 https://github.com/quictls/openssl ${SSL_SRC}
     cd ${SSL_SRC}
     mkdir -p ${SSL_DIR}
-    ./Configure --libdir=lib --prefix=${SSL_DIR} > configure-openssl.log
-    make -j $(nproc) ${SSL_MAKE_ARGS} > make-openssl.log
-    make install	> install-openssl.log
+    ./Configure --libdir=lib --prefix=${SSL_DIR} -w no-tests no-unit-test no-uplink no-acvp-tests no-weak-ssl-ciphers no-deprecated no-des no-bf no-cast no-rc2 no-rc4 no-rc5 no-seed no-md2 no-mdc2 no-ripemd
+    make -j $(nproc) ${SSL_MAKE_ARGS} build_libs > make-openssl.log
+    cp -art ${SSL_DIR}/include/ include/*
+    cp -avt ${SSL_DIR}/lib/ *.so
+
 )
 
 
