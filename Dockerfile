@@ -73,7 +73,7 @@ RUN haproxy -vv
 
 ENTRYPOINT [ "haproxy", "-f", "/etc/haproxy/haproxy.cfg" ]
 
-LABEL org.opencontainers.image.description="HAProxy ${HAPROXY_VERSION} custom build with QUIC ${SSL_VENDOR}" 
+LABEL org.opencontainers.image.description="HAProxy ${HAPROXY_VERSION} custom build with ${SSL_VENDOR} QUIC"
 LABEL org.opencontainers.image.title="haproxy-quic"
 LABEL org.opencontainers.image.licences="WTFPL"
 LABEL org.opencontainers.image.version="${HAPROXY_VERSION}" 
