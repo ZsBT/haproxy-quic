@@ -37,8 +37,6 @@ COPY --from=install /lib/x86_64-linux-gnu/libopentracing-c-wrapper.so.0*    /lib
 COPY --from=install /opt/aws-lc/lib/x86_64-linux-gnu/libcrypto.so   /opt/aws-lc/lib/x86_64-linux-gnu/libcrypto.so
 COPY --from=install /opt/aws-lc/lib/x86_64-linux-gnu/libssl.so      /opt/aws-lc/lib/x86_64-linux-gnu/libssl.so
 
-RUN /usr/sbin/haproxy -vvv
-
 ENTRYPOINT ["/usr/sbin/haproxy"]
 CMD ["-f","/etc/haproxy/haproxy.cfg"]
 
