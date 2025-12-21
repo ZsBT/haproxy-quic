@@ -8,6 +8,7 @@ Docker Hub images available: [buffertly/haproxy-quic](https://hub.docker.com/r/b
 <details>
   <summary>The image has a couple of tags.</summary>
 
+  - `aws-lc`, is not compiled but just packaged thanks to haproxy.com/downloads
   - `wolfssl`, `latest`: based on https://github.com/wolfSSL/wolfssl : x86_64 and armv8 architectures included.
   - `quictls`: based on https://github.com/quictls/quictls : for x86_64 CPU only.
   - ~~`openssl`, `stable`: based on https://github.com/quictls/openssl (discontinued in Sep 2024). x86_64 and armv8.~~ (BROKEN)
