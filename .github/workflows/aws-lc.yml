@@ -1,4 +1,4 @@
-name: build with AWS-LC
+name: Pack with AWS-LC
 
 on:
   push:
@@ -35,5 +35,5 @@ jobs:
 
     - name: Build and push HAProxy w/ AWS-LC
       run: |
-        docker build --build-arg=SSL_VENDOR=${TAG} -t ${DIMAGE}:${TAG} --push ${COMMON_ARGS} -f Dockerfile.${TAG} .
+        docker build --build-arg=SSL_VENDOR=${DTAG} -t ${DIMAGE}:${DTAG} --push ${COMMON_ARGS} -f Dockerfile.${DTAG} .
 

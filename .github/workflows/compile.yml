@@ -1,4 +1,4 @@
-name: CI build
+name: Compile w/ external ssl libs
 
 on:
   push:
