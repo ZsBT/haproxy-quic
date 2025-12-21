@@ -1,0 +1,39 @@
+name: build with AWS-LC
+
+on:
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - LICENSE.txt
+      - README.md
+      - .dockerignore
+
+  workflow_dispatch:
+
+
+jobs:
+  build-n-push:
+
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_CONFIG: $HOME/.docker
+      DIMAGE: buffertly/haproxy-quic
+      DTAG: aws-lc
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USER }}
+        password: ${{ secrets.DOCKERHUB_PASS }}
+
+    - name: Common build arguments
+      run: echo "COMMON_ARGS=--progress=plain --label=org.opencontainers.image.revision=${GITHUB_SHA:0:7} --label=org.opencontainers.image.authors=$GITHUB_ACTOR --label=org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} --label=org.opencontainers.image.created=$(date -Idate) " >> $GITHUB_ENV
+
+    - name: Build and push HAProxy w/ AWS-LC
+      run: |
+        docker build --build-arg=SSL_VENDOR=${TAG} -t ${DIMAGE}:${TAG} --push ${COMMON_ARGS} -f Dockerfile.${TAG} .
+

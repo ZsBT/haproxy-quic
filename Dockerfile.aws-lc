@@ -1,0 +1,49 @@
+ARG DEBIAN_VERSION=13
+ARG DEBIAN_DIST=trixie
+ARG HAPROXY_VERSION=32
+
+FROM debian:$DEBIAN_DIST AS install
+ARG DEBIAN_DIST
+ARG HAPROXY_VERSION
+
+ENV TERM=vt100
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get -qq update && apt-get -y install wget
+
+RUN install -d -m 0755 /usr/share/keyrings
+RUN wget -qO /usr/share/keyrings/HAPROXY-key-community.asc https://www.haproxy.com/download/haproxy/HAPROXY-key-community.asc
+RUN echo "deb [arch=amd64 signed-by=/usr/share/keyrings/HAPROXY-key-community.asc] https://www.haproxy.com/download/haproxy/performance/debian/ha${HAPROXY_VERSION} ${DEBIAN_DIST} main" | tee /etc/apt/sources.list.d/haproxy.list
+RUN apt-get -qq update
+RUN apt-get -y install haproxy-awslc
+
+
+FROM gcr.io/distroless/base-nossl-debian$DEBIAN_VERSION AS final
+ARG DEBIAN_VERSION
+ARG DEBIAN_DIST
+ARG HAPROXY_VERSION
+
+COPY --from=install /usr/sbin/haproxy /usr/sbin/haproxy
+COPY --from=install /lib/x86_64-linux-gnu/libc.so.6*        /lib/x86_64-linux-gnu/
+COPY --from=install /lib/x86_64-linux-gnu/libcrypt.so.1*    /lib/x86_64-linux-gnu/
+COPY --from=install /lib/x86_64-linux-gnu/libgcc_s.so.1*    /lib/x86_64-linux-gnu/
+COPY --from=install /lib/x86_64-linux-gnu/libjemalloc.so.2* /lib/x86_64-linux-gnu/
+COPY --from=install /lib/x86_64-linux-gnu/liblua5.4.so.0*   /lib/x86_64-linux-gnu/
+COPY --from=install /lib/x86_64-linux-gnu/libm.so.6*        /lib/x86_64-linux-gnu/
+COPY --from=install /lib/x86_64-linux-gnu/libpcre2-8.so.0*      /lib/x86_64-linux-gnu/
+COPY --from=install /lib/x86_64-linux-gnu/libstdc++.so.6*       /lib/x86_64-linux-gnu/
+COPY --from=install /lib/x86_64-linux-gnu/libopentracing.so.1*  /lib/x86_64-linux-gnu/
+COPY --from=install /lib/x86_64-linux-gnu/libopentracing-c-wrapper.so.0*    /lib/x86_64-linux-gnu/
+COPY --from=install /opt/aws-lc/lib/x86_64-linux-gnu/libcrypto.so   /opt/aws-lc/lib/x86_64-linux-gnu/libcrypto.so
+COPY --from=install /opt/aws-lc/lib/x86_64-linux-gnu/libssl.so      /opt/aws-lc/lib/x86_64-linux-gnu/libssl.so
+
+RUN /usr/sbin/haproxy -vvv
+
+ENTRYPOINT ["/usr/sbin/haproxy"]
+CMD ["-f","/etc/haproxy/haproxy.cfg"]
+
+LABEL org.opencontainers.image.description="HAProxy ${HAPROXY_VERSION} custom build with AWS-LC"
+LABEL org.opencontainers.image.title="haproxy-aws-lc"
+LABEL org.opencontainers.image.licences="WTFPL"
+LABEL org.opencontainers.image.version="${HAPROXY_VERSION}"
+LABEL org.opencontainers.image.os="${DEBIAN_DIST}"
